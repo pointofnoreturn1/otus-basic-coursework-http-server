@@ -1,9 +1,9 @@
-package io.vaku.app.processors;
+package io.vaku.app.web.processors;
 
 import com.google.gson.Gson;
-import io.vaku.app.HttpRequest;
-import io.vaku.app.app.Item;
-import io.vaku.app.app.ItemsRepository;
+import io.vaku.app.web.HttpRequest;
+import io.vaku.app.domain.Item;
+import io.vaku.app.domain.ItemsRepository;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -27,5 +27,6 @@ public class CreateNewItemsProcessor implements RequestProcessor {
                 "\r\n" +
                 gson.toJson(item);
         output.write(response.getBytes(StandardCharsets.UTF_8));
+        output.close();
     }
 }

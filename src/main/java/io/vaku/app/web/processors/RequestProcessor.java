@@ -1,6 +1,6 @@
-package io.vaku.app.processors;
+package io.vaku.app.web.processors;
 
-import io.vaku.app.HttpRequest;
+import io.vaku.app.web.HttpRequest;
 
 import java.io.IOException;
 import java.io.OutputStream;

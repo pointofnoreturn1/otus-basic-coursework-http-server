@@ -1,6 +1,6 @@
-package io.vaku.app.processors;
+package io.vaku.app.web.processors;
 
-import io.vaku.app.HttpRequest;
+import io.vaku.app.web.HttpRequest;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -11,5 +11,6 @@ public class DefaultMethodNotAllowedProcessor implements RequestProcessor {
     public void execute(HttpRequest request, OutputStream output) throws IOException {
         String response = "HTTP/1.1 405 Method Not Allowed\r\n";
         output.write(response.getBytes(StandardCharsets.UTF_8));
+        output.close();
     }
 }

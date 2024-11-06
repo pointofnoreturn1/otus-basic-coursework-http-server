@@ -1,7 +1,7 @@
-package io.vaku.app;
+package io.vaku.app.web;
 
-import io.vaku.app.app.ItemsRepository;
-import io.vaku.app.processors.*;
+import io.vaku.app.domain.ItemsRepository;
+import io.vaku.app.web.processors.*;
 
 import java.io.IOException;
 import java.io.OutputStream;

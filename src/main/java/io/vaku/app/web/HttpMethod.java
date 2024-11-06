@@ -1,4 +1,4 @@
-package io.vaku.app;
+package io.vaku.app.web;
 
 public enum HttpMethod {
     GET, POST

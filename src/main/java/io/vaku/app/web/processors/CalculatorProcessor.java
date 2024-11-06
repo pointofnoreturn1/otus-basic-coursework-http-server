@@ -1,7 +1,7 @@
-package io.vaku.app.processors;
+package io.vaku.app.web.processors;
 
-import io.vaku.app.BadRequestException;
-import io.vaku.app.HttpRequest;
+import io.vaku.app.web.BadRequestException;
+import io.vaku.app.web.HttpRequest;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -35,5 +35,6 @@ public class CalculatorProcessor implements RequestProcessor {
                 "\r\n" +
                 "<html><body><h1>" + math + "</h1></body></html>";
         output.write(response.getBytes(StandardCharsets.UTF_8));
+        output.close();
     }
 }

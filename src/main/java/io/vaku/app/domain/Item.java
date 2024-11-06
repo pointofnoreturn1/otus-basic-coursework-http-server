@@ -1,4 +1,4 @@
-package io.vaku.app.app;
+package io.vaku.app.domain;
 
 import java.math.BigDecimal;
 
