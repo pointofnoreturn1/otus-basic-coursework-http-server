@@ -1,6 +1,6 @@
 package io.vaku.app.web;
 
-import io.vaku.app.domain.ItemsRepository;
+import io.vaku.app.domain.ItemsDAO;
 import io.vaku.app.web.processors.*;
 
 import java.io.IOException;
@@ -15,15 +15,15 @@ public class Dispatcher {
     private RequestProcessor defaultBadRequestProcessor;
     private RequestProcessor defaultMethodNotAllowedProcessor;
 
-    private ItemsRepository itemsRepository;
+    private ItemsDAO itemsDAO;
 
     public Dispatcher() {
-        this.itemsRepository = new ItemsRepository();
+        this.itemsDAO = new ItemsDAO();
         this.processors = new HashMap<>();
         this.processors.put("GET /", new HelloWorldProcessor());
         this.processors.put("GET /calculator", new CalculatorProcessor());
-        this.processors.put("GET /items", new GetAllItemsProcessor(itemsRepository));
-        this.processors.put("POST /items", new CreateNewItemsProcessor(itemsRepository));
+        this.processors.put("GET /items", new GetAllItemsProcessor(itemsDAO));
+        this.processors.put("POST /items", new CreateNewItemsProcessor(itemsDAO));
         this.defaultNotFoundProcessor = new DefaultNotFoundProcessor();
         this.defaultInternalServerErrorProcessor = new DefaultInternalServerErrorProcessor();
         this.defaultBadRequestProcessor = new DefaultBadRequestProcessor();
