@@ -7,14 +7,23 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class HttpRequest {
-    private static final Logger logger = LogManager.getLogger(HttpRequest.class);
-    private String rawRequest;
+    private final String rawRequest;
     private HttpMethod method;
     private String uri;
-    private Map<String, String> parameters;
-    private Map<String, String> headers;
+    private final Map<String, String> headers;
+    private final Map<String, String> parameters;
+    private String pathVariable;
     private String body;
     private Exception exception;
+
+    private static final Logger logger = LogManager.getLogger(HttpRequest.class);
+
+    public HttpRequest(String rawRequest) {
+        this.rawRequest = rawRequest;
+        this.headers = new HashMap<>();
+        this.parameters = new HashMap<>();
+        this.parse();
+    }
 
     public Exception getException() {
         return exception;
@@ -32,18 +41,20 @@ public class HttpRequest {
         return method + " " + uri;
     }
 
-    public String getBody() {
-        return body;
-    }
-
-    public HttpRequest(String rawRequest) {
-        this.rawRequest = rawRequest;
-        this.headers = new HashMap<>();
-        this.parse();
+    public Map<String, String> getHeaders() {
+        return headers;
     }
 
     public String getParameter(String key) {
         return parameters.get(key);
+    }
+
+    public String getPathVariable() {
+        return pathVariable;
+    }
+
+    public String getBody() {
+        return body;
     }
 
     public boolean containsParameter(String key) {
@@ -51,12 +62,25 @@ public class HttpRequest {
     }
 
     private void parse() {
-        int startIndex = rawRequest.indexOf(' ');
-        int endIndex = rawRequest.indexOf(' ', startIndex + 1);
-        uri = rawRequest.substring(startIndex + 1, endIndex);
-        parseHeaders(rawRequest);
-        method = HttpMethod.valueOf(rawRequest.substring(0, startIndex));
-        parameters = new HashMap<>();
+        int startIndex = rawRequest.indexOf(' ') + 1;
+        int endIndex = rawRequest.indexOf(' ', startIndex);
+        this.uri = rawRequest.substring(startIndex, endIndex);
+        this.method = HttpMethod.valueOf(rawRequest.substring(0, startIndex - 1));
+        parseHeaders();
+        parseParameters();
+        parsePathVariable();
+        parseBody();
+    }
+
+    private void parseHeaders() {
+        String stringHeaders = rawRequest.substring(rawRequest.indexOf("\r\n") + 2, rawRequest.indexOf("\r\n\r\n"));
+        for (String line : stringHeaders.split("\r\n")) {
+            String[] header = line.split(": ");
+            headers.put(header[0], header[1]);
+        }
+    }
+
+    private void parseParameters() {
         if (uri.contains("?")) {
             String[] elements = uri.split("[?]");
             uri = elements[0];
@@ -66,16 +90,18 @@ public class HttpRequest {
                 parameters.put(keyValue[0], keyValue[1]);
             }
         }
-        if (method == HttpMethod.POST) {
-            this.body = rawRequest.substring(rawRequest.indexOf("\r\n\r\n") + 4);
+    }
+
+    private void parsePathVariable() {
+        String[] tokens = uri.split("/");
+        if (tokens.length >= 3) {
+            this.pathVariable = tokens[2];
         }
     }
 
-    private void parseHeaders(String rawRequest) {
-        String stringHeaders = rawRequest.substring(rawRequest.indexOf("\r\n") + 2, rawRequest.indexOf("\r\n\r\n"));
-        for (String line : stringHeaders.split("\r\n")) {
-            String[] header = line.split(": ");
-            headers.put(header[0], header[1]);
+    private void parseBody() {
+        if (method != HttpMethod.GET) {
+            this.body = rawRequest.substring(rawRequest.indexOf("\r\n\r\n") + 4);
         }
     }
 

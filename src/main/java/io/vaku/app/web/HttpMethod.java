@@ -1,5 +1,5 @@
 package io.vaku.app.web;
 
 public enum HttpMethod {
-    GET, POST
+    GET, POST, PUT, DELETE
 }
