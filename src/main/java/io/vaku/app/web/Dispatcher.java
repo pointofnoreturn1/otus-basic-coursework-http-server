@@ -60,7 +60,7 @@ public class Dispatcher {
             request.setException(e);
             defaultBadRequestProcessor.execute(request, out);
         } catch (Exception e) {
-            e.printStackTrace();
+            request.setException(e);
             defaultInternalServerErrorProcessor.execute(request, out);
         }
     }

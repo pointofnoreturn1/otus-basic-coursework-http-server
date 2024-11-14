@@ -44,12 +44,27 @@ public class ItemDAO {
         }
     }
 
-    public Item create(Item item) {
-        return null;
+    public void create(ItemPostRequest item) {
+        try (PreparedStatement stmt = getConnection().prepareStatement("INSERT INTO item (title, price) VALUES (?, ?)")) {
+            stmt.setString(1, item.getTitle());
+            stmt.setBigDecimal(2, item.getPrice());
+            stmt.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public Item update(Item item) {
-        return null;
+        try (PreparedStatement stmt = getConnection().prepareStatement("UPDATE item SET title = ?, price = ? WHERE id = ?")) {
+            stmt.setString(1, item.getTitle());
+            stmt.setBigDecimal(2, item.getPrice());
+            stmt.setLong(3, item.getId());
+            stmt.executeUpdate();
+
+            return getById(item.getId()).get();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void delete(long id) {

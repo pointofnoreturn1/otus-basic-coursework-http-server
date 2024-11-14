@@ -9,10 +9,11 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class HttpServer {
-    private static final Logger logger = LogManager.getLogger(HttpServer.class);
     private final int port;
     private final Dispatcher dispatcher;
     private final ExecutorService executorService;
+
+    private static final Logger logger = LogManager.getLogger(HttpServer.class);
 
     public HttpServer(int port) {
         this.port = port;
