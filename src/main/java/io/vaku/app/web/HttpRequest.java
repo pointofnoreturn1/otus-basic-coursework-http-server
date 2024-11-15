@@ -33,6 +33,10 @@ public class HttpRequest {
         this.exception = exception;
     }
 
+    public HttpMethod getMethod() {
+        return method;
+    }
+
     public String getUri() {
         return uri;
     }

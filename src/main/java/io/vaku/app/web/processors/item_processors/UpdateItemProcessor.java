@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 import io.vaku.app.domain.Item;
 import io.vaku.app.domain.ItemDAO;
-import io.vaku.app.web.BadRequestException;
+import io.vaku.app.web.exception.BadRequestException;
 import io.vaku.app.web.HttpRequest;
 import io.vaku.app.web.processors.RequestProcessor;
 
@@ -30,15 +30,15 @@ public class UpdateItemProcessor implements RequestProcessor  {
             throw new BadRequestException("Can't parse json body");
         }
 
-        if (item.getId() == null) {
+        if (item.id() == null) {
             throw new BadRequestException("Invalid request body: 'id' can't be null");
         }
 
-        if (item.getTitle() == null) {
+        if (item.title() == null) {
             throw new BadRequestException("Invalid request body: 'title' can't be null");
         }
 
-        if (item.getPrice() == null) {
+        if (item.price() == null) {
             throw new BadRequestException("Invalid request body: 'price' can't be null");
         }
 

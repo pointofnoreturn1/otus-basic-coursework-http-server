@@ -1,7 +1,7 @@
 package io.vaku.app.web.processors.item_processors;
 
 import io.vaku.app.domain.ItemDAO;
-import io.vaku.app.web.BadRequestException;
+import io.vaku.app.web.exception.BadRequestException;
 import io.vaku.app.web.HttpRequest;
 import io.vaku.app.web.processors.RequestProcessor;
 

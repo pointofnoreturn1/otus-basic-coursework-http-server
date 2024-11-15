@@ -46,8 +46,8 @@ public class ItemDAO {
 
     public void create(ItemPostRequest item) {
         try (PreparedStatement stmt = getConnection().prepareStatement("INSERT INTO item (title, price) VALUES (?, ?)")) {
-            stmt.setString(1, item.getTitle());
-            stmt.setBigDecimal(2, item.getPrice());
+            stmt.setString(1, item.title());
+            stmt.setBigDecimal(2, item.price());
             stmt.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
@@ -56,12 +56,12 @@ public class ItemDAO {
 
     public Item update(Item item) {
         try (PreparedStatement stmt = getConnection().prepareStatement("UPDATE item SET title = ?, price = ? WHERE id = ?")) {
-            stmt.setString(1, item.getTitle());
-            stmt.setBigDecimal(2, item.getPrice());
-            stmt.setLong(3, item.getId());
+            stmt.setString(1, item.title());
+            stmt.setBigDecimal(2, item.price());
+            stmt.setLong(3, item.id());
             stmt.executeUpdate();
 
-            return getById(item.getId()).get();
+            return getById(item.id()).get();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

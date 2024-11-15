@@ -1,6 +1,9 @@
 package io.vaku.app.web;
 
 import io.vaku.app.domain.ItemDAO;
+import io.vaku.app.web.exception.BadRequestException;
+import io.vaku.app.web.exception.MethodNotAllowedException;
+import io.vaku.app.web.exception.NotFoundException;
 import io.vaku.app.web.processors.*;
 import io.vaku.app.web.processors.default_processors.DefaultBadRequestProcessor;
 import io.vaku.app.web.processors.default_processors.DefaultInternalServerErrorProcessor;
@@ -22,6 +25,7 @@ public class Dispatcher {
     private final RequestProcessor defaultInternalServerErrorProcessor;
     private final RequestProcessor defaultBadRequestProcessor;
     private final RequestProcessor defaultMethodNotAllowedProcessor;
+    private final RequestProcessor staticFileProcessor;
 
     public Dispatcher() {
         ItemDAO itemDAO = new ItemDAO();
@@ -29,9 +33,8 @@ public class Dispatcher {
         this.defaultInternalServerErrorProcessor = new DefaultInternalServerErrorProcessor();
         this.defaultBadRequestProcessor = new DefaultBadRequestProcessor();
         this.defaultMethodNotAllowedProcessor = new DefaultMethodNotAllowedProcessor();
+        this.staticFileProcessor = new StaticFileProcessor();
         this.processors = new HashMap<>();
-        this.processors.put("GET /", new HelloWorldProcessor());
-        this.processors.put("GET /calculator", new CalculatorProcessor());
         this.processors.put("GET /items", new GetItemProcessor(itemDAO));
         this.processors.put("POST /items", new CreateItemProcessor(itemDAO));
         this.processors.put("PUT /items", new UpdateItemProcessor(itemDAO));
@@ -50,12 +53,22 @@ public class Dispatcher {
             if (!processors.containsKey(request.getRoutingKey())) {
                 for (String key : processors.keySet()) {
                     if (key.split(" ")[1].startsWith(request.getUri())) {
-                        defaultMethodNotAllowedProcessor.execute(request, out);
-                        return;
+                        throw new MethodNotAllowedException("Method Not Allowed: " + request.getMethod());
                     }
                 }
-                defaultNotFoundProcessor.execute(request, out);
             }
+
+            if (request.getMethod().equals(HttpMethod.GET)) {
+                staticFileProcessor.execute(request, out);
+            } else {
+                throw new NotFoundException("Page Not Found");
+            }
+        } catch (NotFoundException e) {
+            request.setException(e);
+            defaultNotFoundProcessor.execute(request, out);
+        } catch (MethodNotAllowedException e) {
+            request.setException(e);
+            defaultMethodNotAllowedProcessor.execute(request, out);
         } catch (BadRequestException e) {
             request.setException(e);
             defaultBadRequestProcessor.execute(request, out);
