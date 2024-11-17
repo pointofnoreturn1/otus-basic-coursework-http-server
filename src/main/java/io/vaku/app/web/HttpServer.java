@@ -28,7 +28,7 @@ public class HttpServer {
                 executorService.execute(new ClientHandler(serverSocket.accept(), dispatcher));
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.error(e.getStackTrace());
         }
     }
 }
